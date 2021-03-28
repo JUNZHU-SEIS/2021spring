@@ -1,4 +1,6 @@
 data
 image
 tmp
+*.aux
+*.log
 __pycache__
