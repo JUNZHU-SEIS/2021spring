@@ -15,7 +15,7 @@ gmt begin ../image/regional_ETOP png
 	gmt makecpt -Cetopo1
 	gmt grdimage ../data/relief/region.nc -JM15c -Baf -BWSen -I+d
 	gmt colorbar -Bxa3000f+l"Elevation (m)"
-		gmt end show
+gmt end show
 
 gmt begin ../image/global_quake_distribution png
 	gmt coast -JH180/15c -Rg -B0 -W0.5p -A15000
