@@ -1,0 +1,99 @@
+\documentclass{article}
+\title{\textbf{HW03}}
+\author{\textbf{Jun ZHU, SA20007073}}
+%\date{March 25, 2021}
+\usepackage{graphicx}
+\usepackage{float}
+\graphicspath{{../image/}}
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+\begin{document}
+\maketitle
+\section{}
+Derivative for the wave system below:
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.2]{wavesystem.png}
+\caption{ray angle $i$, $j$}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.2]{snell.png}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.2]{ref.png}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.2]{trans.png}
+\end{figure}
+\subsection{plot}
+\begin{figure}[H]
+\centering
+\includegraphics{coef.png}
+\caption{reflection \& transmission coefficients}
+\end{figure}
+\subsection{polarization}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.2]{polar.png}
+\caption{polarization table}
+\end{figure}
+for Fig (a)
+$$x=sin(i)+pp\times sin(i)+ps\times cos(j)$$
+$$z=-cos(i)+pp\times cos(i)-ps\times sin(j)$$
+$$\bar{\theta} =arctan2(x, -z)$$
+\par
+for Fig (b)
+$$x=cos(j)+sp\times sin(i)+ss\times cos(j)$$
+$$z=sin(j)+sp\times cos(i)-ss\times sin(j)$$
+$$\bar{\phi} =arctan2(x, -z)$$
+\subsection{discussion}
+\subsection{critical angle}
+
+\section{}
+\subsection{plot}
+\begin{figure}[H]
+\centering
+\includegraphics{scpcoef.png}
+\caption{reflection coefficient for ScP phase}
+\end{figure}
+\subsection{Green's function}
+\subsection{synthetics}
+
+\section{polarity analysis}
+\subsection{beach-ball}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{meca.png}
+\caption{an example from GCMT}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{radiation.png}
+\caption{radiation pattern viewed from the lower hemi-sphere}
+\end{figure}
+\subsection{}
+\end{document}

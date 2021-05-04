@@ -1,0 +1,6 @@
+to run the c code
+please compile it using gcc:
+	gcc layer_trac.c layer.c numc.c -lm
+
+then run
+	./a.out

@@ -1,0 +1,36 @@
+\documentclass{article}
+\usepackage{palatino}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\begin{document}
+\thispagestyle{empty}
+% 流程图定义基本形状
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width = 2cm, minimum height=1cm,text centered, draw = black]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=2cm, minimum height=1cm, text centered, draw=black]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black]
+\tikzstyle{check} = [diamond, aspect = 3, text centered, draw=black]
+% 箭头形式
+\tikzstyle{arrow} = [->,>=stealth]
+\begin{tikzpicture}[node distance=5mm]
+%定义流程图具体形状
+\node[startstop](start){Start main};
+\node[io, below of = start, yshift = -1cm](in1){Input \textbf{search range \& potential depth}};
+\node[process, below of = in1, yshift = -1cm](pro1){Source Inversion: coarse solution};
+\node[process, below of = pro1, yshift = -1cm](pro2){Source Inversion: finer solution around the coarse solution};
+\node[check, below of = pro2, yshift = -1cm](check1){Polarity data ?};
+\node[process, below of = check1, yshift = -1cm](pro3){Restrict possible solution};
+\node[io, below of = pro3, yshift = -1cm](out1){Output \textbf{optimal solution \& corresponding misfit}};
+\node[startstop, below of = out1, yshift = -1cm](stop){Stop};
+\coordinate (point1) at (-7.2cm, -6cm);
+%连接具体形状
+\draw [arrow] (start) -- (in1);
+\draw [arrow] (in1) -- (pro1);
+\draw [arrow] (pro1) -- (pro2);
+\draw [arrow] (pro2) -- (check1);
+\draw (check1) -- node [above] {N} (point1);
+\draw [arrow] (point1) |- (out1);
+\draw [arrow] (check1) -- node [right] {Y} (pro3);
+\draw [arrow] (pro3) -- (out1);
+\draw [arrow] (out1) -- (stop);
+\end{tikzpicture}
+\end{document}

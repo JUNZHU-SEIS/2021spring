@@ -1,0 +1,82 @@
+\documentclass{article}
+\title{\textbf{HW05}}
+\author{\textbf{Jun Zhu, SA20007073}}
+%\date{March 25, 2021}
+\usepackage{graphicx}
+\usepackage{float}
+\graphicspath{{../image/}}
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+\begin{document}
+\maketitle
+\section{Introduction}
+The digital revolution in the 1960s
+appears to be the culmination of this attempt at mechanization, but not until the development of truly powerful scientific computers did the more accurate and advanced theoretical developments in seismic-imaging theory become practical to apply and use in the search for diminishing supplies of hydrocarbons.\par
+The word, ``Migration'' come from the geologic conception of how oil migrates updip.\par
+Seismic migration is the search for sound speed (velocity) and dips.\par
+All seismic migrations move events from apparent positions to close-to-correct imaged positions and then shift events to migrated time or depth.\par
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.2]{fig1.png}
+\caption{map-migration in 3D}
+\end{figure}
+Points from the recorded data are swept out over circles in this constant-velocity case. The envelope of these curves then reconstructs the dipping event at its proper subsurface location.\par
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.2]{fig2.png}
+\caption{swing-arm migration based on a constant velocity}
+\end{figure}
+\section{1923 - 1935: Flat Earth Society}
+\section{1936 - 1953: the age of reflections}
+\section{1954 - 1959: dips, swings, and special machines}
+``ruler and compass'' method\par
+Rays arrive at the surface as if they would have come from the ``virtual source'', the reflection image of the real source in the reflector.\par
+\section{1960 - 1974: the digital and wave-equation revolution}
+Claerbout's work in 1970 and 1971\par
+Both of them focused on the use of second-order, hyperbolic, partial-differential equations to perform the imaging.\par
+Upward- and downward-going waves governed by a one-way equation are coupled with an imaging condition that produces the image.\par
+For the most part, Claerbout’s approach was based on finite differences. The derivatives in the hyperbolic equations were replaced with numerical approximations or differences, and the forward and backward propagations were done sequentially.\par
+While Stolt’s Fourier-based method (1978) was only theoretically valid for constant velocities, Claerbout’s finite differences were reasonably insensitive to velocity variation. On the other hand, his method could only handle dips up to around 15 degree, while Stolt’s method was good up to 90 degree. Both were one-way methods and assumed that only upward-traveling waves were recorded at the receivers.\par
+These two papers (Claerbout, 1971; Stolt, 1978) are significant for four reasons. First, they provided a different approach to the solution of the same problem. Second, they represented two of the first deviations from thediffraction-stack approaches of the period. Third, they were both based on the same second-order hyperbolic partial-differential equations. Fourth, they made it clear that one could actually digitally image data on the computers of the day.\par
+\section{1975 - 1988: explosive algorithm}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.2]{algorithm.png}
+\caption{migration algorithm hierarchy}
+\end{figure}
+\section{1989 - 2004: computation capability development}
+Seismic UNIX\par
+\section{philosophical ramblings}
+\section{terminology}
+\begin{lstlisting}
+doodlebugger
+detonation
+slant-stacking
+diffraction-stack
+wavepath-migration
+Gaussian beam method
+phase-shift method
+reverse-time migration
+\end{lstlisting}
+\end{document}

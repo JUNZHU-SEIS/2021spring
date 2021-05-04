@@ -1,0 +1,150 @@
+\documentclass{article}
+\title{RAY BENDIHNG \& TRAVEL TIME}
+\author{Jun Zhu, SA20007073}
+\usepackage{graphicx}
+\graphicspath{{../image/}}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=left,%设置行号位置none不显示行号
+  %numberstyle=\tiny\courier, %设置行号大小
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  escapeinside=``,%逃逸字符(1左面的键)，用于显示中文例如在代码中`中文...`
+  tabsize=4,
+  extendedchars=false %解决代码跨页时，章节标题，页眉等汉字不显示的问题
+}
+\begin{document}
+\maketitle
+\begin{lstlisting}
+clear all
+close all
+global ray npts 
+%po: position of source
+po.x=0; po.z=12.81;
+%ps: positio of receiver
+ps.x=18.14; ps.z=-1.07;
+%grid cofigurations
+nx=100;nz=100;dx=1;dz=1;
+%constant velocity model
+%vz: velocity along the z axis
+%vx: velocity along the x axis
+%v0: 
+vz=0; vx=1; v0=3;
+[Velo, Vx, Vz]=v_field(nx,nz,vx,vz,v0,dx,dz);
+%add random velocity field
+[vxp, vzp]=add_random(nz,nx);
+Vx = Vx + vxp; Vz = Vz + vzp;
+max_npts=1000;
+initial(po,ps,max_npts,v0,vx,vz,dx,dz,Velo,Vx,Vz);
+%100: maximum iteration number
+%1.e-8: termination threshold of updating travel time
+getRay(100, 1.e-8);
+t1 = traveltime(npts,ray)%  
+\end{lstlisting}
+\begin{lstlisting}
+function getRay(maxiter, thred_t)
+%max iteration number
+%threshold of updated time difference
+global ray npts
+while(1)
+    niter=0;
+    while(1)
+        niter=niter+1;
+        if(niter>=maxiter)
+            break;
+        end
+        t0 = traveltime(npts,ray);
+        perturbRay();
+  
+        t1 = traveltime(npts,ray);
+        if(abs(t0-t1)<thred_t )
+            break;
+        end
+    end
+    if(2*npts-1>=maxiter)
+        break;
+    end
+    doublePath();
+    t2 = traveltime(npts,ray);
+    if(abs(t2-t1)<thred_t )
+        break;
+    end
+    plotpath(ray);hold on
+end            
+\end{lstlisting}
+\begin{lstlisting}
+#include <stdio.h>
+#include <stdlib.h>
+#include "layer.h"
+#include "numc.h"
+
+#define N 100000
+#define LN 130
+int main(int argc,char *argv[])
+{
+	//read ak135 
+	float d, v, dep[136], h[135], vp[136];
+	int i=0;
+	FILE *fp;
+	if ((fp=fopen("../../data/AK135CSV/ak135","r")) == NULL)
+	{
+		printf("\nerror on open the file");
+		getchar();
+		exit(0);
+	}
+	while(!feof(fp))	
+	{
+		fscanf(fp,"%f %f",&d,&v);
+		dep[i]=d;
+		vp[i]=v;
+		i++;
+//		printf("%f %f\n",d,v);
+	}
+	for (i=0;i<135;i++)
+	{
+		h[i]=dep[i+1]-dep[i];
+//		printf("%f\n",h[i]);
+	}
+
+	int irtr,j;
+	float dx=0,dt=0,p[N],x[N]={0.0},t[N]={0.0},tau[N]={0.0};
+	
+	linspace(0.05434,0.08979,N,p);
+
+	for(i=0;i<N;i++)
+	{
+		for(j=0;j<LN;j++)
+		{
+			irtr = layerxt(p[i],h[j],1.0/vp[j],1.0/vp[j+1],&dx,&dt);
+			x[i] += dx;
+			t[i] += dt;
+		}
+		tau[i] = t[i]-p[i]*x[i];
+	}
+	printf("param delta tt tau\n");
+	fp=fopen("../../output/tttable.txt","w");
+	fprintf(fp, "param delta tt tau\n");
+	for(i=0;i<N;i++)
+	{
+		printf("%f	%f	%f	%f\n",p[i],x[i]/111,t[i],tau[i]);
+		fprintf(fp, "%f	%f	%f	%f\n",p[i],x[i]/111,t[i],tau[i]);
+	}
+	fclose(fp);
+	return 0;
+}
+\end{lstlisting}
+\end{document}

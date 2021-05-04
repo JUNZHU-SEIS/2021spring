@@ -1,0 +1,34 @@
+\documentclass{article}
+\usepackage{palatino}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\begin{document}
+\thispagestyle{empty}
+% 流程图定义基本形状
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width = 2cm, minimum height=1cm,text centered, draw = black]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=2cm, minimum height=1cm, text centered, draw=black]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black]
+\tikzstyle{check} = [diamond, aspect = 3, text centered, draw=black]
+% 箭头形式
+\tikzstyle{arrow} = [->,>=stealth]
+\begin{tikzpicture}[node distance=5mm]
+%定义流程图具体形状
+\node[startstop](start){Start subroutine: misfit of single station};
+\node[io, below of = start, yshift = -1cm](in1){Input \textbf{synt \& obs} on all components};
+\node[process, below of = in1, yshift = -1cm](pro1){Calculate $M_0$ for each component and average moment $\bar M_0$};
+\node[process, below of = pro1, yshift = -1cm](pro2){Calculate errors $e_{L1}, e_{L2}$ defined by L1, L2 norm, respectively};
+\node[process, below of = pro2, yshift = -1cm](pro3){Determine the optimal distance scaling factor $p$ by LS fit};
+\node[process, below of = pro3, yshift = -1cm](pro4){$\bar M_0; e_2=(e_{L1}+e_{L2}+(2e_{L1}^2+2e_{L2}^2)^{1/2})/4$};
+\node[io, below of = pro4, yshift = -1cm](out1){Output misfit of single station $e_1+e_2$};
+\node[startstop, below of = out1, yshift = -1cm](stop){Stop};
+%\coordinate (point1) at (-5cm, -6cm);
+%%连接具体形状
+\draw [arrow] (start) -- (in1);
+\draw [arrow] (in1) -- (pro1);
+\draw [arrow] (pro1) -- (pro2);
+\draw [arrow] (pro2) -- (pro3);
+\draw [arrow] (pro3) -- (pro4);
+\draw [arrow] (pro4) -- (out1);
+\draw [arrow] (out1) -- (stop);
+\end{tikzpicture}
+\end{document}
