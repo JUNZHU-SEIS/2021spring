@@ -1,0 +1,71 @@
+\documentclass{article}
+\title{\textbf{HW03: model test}}
+\author{\textbf{Jun ZHU, SA20007073}}
+%\date{March 25, 2021}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\graphicspath{{../image/}}
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{mygreen}{RGB}{28,172,0}
+\definecolor{mylilas}{RGB}{170,55,241}
+
+\lstset{language=Matlab,
+    breaklines=true,
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},
+    showstringspaces=false,
+    numbers=left,
+    numberstyle={\tiny \color{black}},
+    numbersep=9pt,
+    emph=[1]{for,end,break},emphstyle=[1]\color{red},
+    emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+
+\begin{document}
+\maketitle
+\section{theoretical model}
+\includegraphics[scale=0.2]{eq_velocity.png}\newline
+\includegraphics[scale=0.2]{eq_raypath.png}\newline
+\includegraphics[scale=0.2]{eq_turningtime.png}
+\section{model setup}
+$$v_0=1600\;m/s$$
+$$K=0.5\;s^{-1}$$
+$$\alpha _{0}=[0:\pi/200:\pi/2]$$
+\section{ray path}
+\subsection{tt table method vs. theoretical}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.4]{modeltestable.jpg}
+  \caption{Black lines denote theoretical ray paths with take-off angle $\alpha _0$ ranges from 0 to $\pi/2$, the white line denotes the ray path calculated by travel time table steepest descent method.}
+\end{figure}
+\subsection{two-point ray-tracing method vs. theoretical}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.4]{modeltestangle.jpg}
+  \caption{Black lines denote theoretical ray paths with take-off angle $\alpha _0$ ranges from 0 to $\pi/2$, the white line denotes the optimal ray path calculated by two-point ray-tracing method.}
+\end{figure}
+\section{Supplement}
+\subsection{how to set the vertical linear velocity model \& calculate theoretical ray path}
+\begin{lstlisting}
+v0=1600; K=0.5; z=(1:N1)*h; beta=K/(v0+K*z(2));
+vz=v0+K*z;
+vel=vz'.*ones(1,N2);
+deltangl=pi/200;
+alpha0=[0:deltangl:pi/2];
+x1=1./(beta*tan(alpha0))+h*10;
+z1=-1/beta+h*2;
+r1=1./(beta*sin(alpha0));
+theta=[0:pi/2^10:2*pi];
+u=x1+r1.*cos(theta');
+v=z1+r1.*sin(theta');
+\end{lstlisting}
+\end{document}

@@ -1,0 +1,164 @@
+\documentclass{article}
+\title{\textbf{hw03 for Geodynamics}}
+\author{\textbf{Jun ZHU, SA20007073}}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+\usepackage{graphicx}
+\graphicspath{{../image/}}
+\usepackage{float}
+\begin{document}
+\maketitle
+\section{theorem}
+\subsection{equat
+ions relating steady-state concentrated loading and crustal response}
+\begin{equation}\label{Brotchie}
+D\nabla^4\omega+(ET/R^2)\omega+\gamma\omega=q
+\end{equation}
+in which:\newline
+$\omega$: the radial displacement\newline
+$q$: normal loading of intensity\newline
+$D$: flexural stiffness of the shell cross section\newline
+\begin{equation}
+D=ET^3/12(1-\nu^2)
+\end{equation}
+$T$: thickness of the shell\newline
+$E$: Young's modulus\newline
+$\nu$: Possion's ratio\newline
+\textbf{$R$: radius of its middle surface\newline}
+$\gamma$: density of the liquid\newline
+$\nu$: Possion's ratio\newline
+$\nabla^4$: biharmonic operator\newline
+
+Rewrite the equation \ref{Brotchie}:
+
+\begin{equation}\label{rewritten}
+\nabla^4\omega+(1/l^4)\omega=q/D
+\end{equation}
+
+in which:\newline
+\textbf{$l$: is the radius of relative stiffness}
+
+\begin{equation}
+l^4=D/[(ET/R^2)+\gamma]
+\end{equation}
+
+The homogeneous (basic) solution:\newline
+\begin{subequations}\label{solution}
+\begin{align*}
+&\omega_0=C_1ber(x)+C_2bei(x)+C_3ker(x)+C_4kei(x)\\ 
+&\omega_P=ql^4/D\\
+&\omega=\omega_0+\omega_P
+\end{align*}
+\end{subequations}
+in which:\newline
+$x$: $r/l$
+
+The solution for a concentrated load of magnitude P:\newline
+
+\begin{equation}\label{volcano}
+\omega=(Pl^2/2\pi D)kei(x)
+\end{equation}
+
+in which:\newline
+$P$: total loading due to the volcanic cone\newline
+
+The solution for uniform loading:\newline
+\begin{equation}
+  \omega_i=\frac{\gamma_{ice}h}{\gamma^{'}}(aker^{'}(a)ber(x)-akei^{'}(a)bei(x)+1)
+\end{equation}
+\begin{equation}
+  \omega_0=\frac{\gamma_{ice}h}{\gamma^{'}}(aber^{'}(a)ker(x)-abei^{'}(a)kei(x))
+\end{equation}
+
+
+in which:\newline
+$a=A/l$\newline
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{schematic.png}
+\caption{schematic for r, l}
+\end{figure}
+
+
+\section{code setup}
+\begin{lstlisting}
+import numpy as np
+class Config():
+	def __init__(self):
+		self.rate = 300 * 1e3
+		self.duration = 2
+		self.height = 2 * 1e3
+		self.up2bot = 0.8
+		#unit conversion Gpa2pa
+		self.E = 70 * 1e9
+		self.possion = 0.25
+		#unit conversion
+		self.rhoBasalts = 2700 * 9.8065
+		self.gamma = 2900 * 9.8065
+		#thickness
+		self.T = 100 * 1e3
+		self.r = np.arange(0, 100, 10) * 1e3
+		self.delta = 0.01
+
+		self.R = 6371 * 1e3 - self.T
+		self.pi = 3.141592654
+		self.t0 = 0
+		self.te = 2
+
+		self.GAMMA = self.gamma + self.E * self.T / self.R**2
+		self.GammaRatio = self.gamma / self.GAMMA
+		self.D = self.E*self.T**3/12/(1 - self.possion**2)
+		self.l = (self.D / ((self.E*self.T/self.R**2) + self.gamma))**0.25
+		self.x = np.array(self.r) / self.l
+
+		\end{lstlisting}
+\section{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{100T100km.png}
+\caption{T=100km}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{100T50km.png}
+\caption{T=50km}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{500T100km.png}
+\caption{T=100km}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{500T50km.png}
+\caption{T=50km}
+
+\end{figure}
+
+
+\end{document}

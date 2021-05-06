@@ -1,0 +1,171 @@
+\documentclass{article}
+\title{\textbf{HW03}}
+\author{\textbf{Jun ZHU, SA20007073}}
+%\date{March 25, 2021}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\graphicspath{{../image/}}
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\begin{document}
+\maketitle
+\section{Features of various ray-tracing methods}
+
+\subsection{shooting}
+\begin{itemize}
+\item Rays are shot from a source point without knowing where the ray is heading to;
+\item Rays travel along the gradient of the slowness.
+\end{itemize}
+
+\subsection{two-point by searching for the optimal take-off angle}
+The optimal take-off angle will send the ray right to the receiver position.
+This is a non-linear optimization problem because there could be many
+ray paths between the source and receiver. Why? Before we choose the
+optimal angle, we search a sample set of all possible angles and find the
+closest ray to the receiver. What we get is a function of how close the
+ray came about the receiver. A ray that connect the source to the 
+receiver should have zero distance from the receiver. 
+
+\subsection{two-point based on Fermat's principle (bending method)}
+\begin{itemize}
+\item  According to Fermat's principle, the ray-path that connects two points
+in the medium is the minimum time $\tau $ path. A ray path can be
+parametrized a series of points {(xsrc, zsrc), (x1, z1), (x2, z2), ...,
+(recx, recz)}. 
+
+We can solve for the pairs  (x1, z1), (x2, z2),... that minimize the
+traveltime of the ray. This is a non-linear problem that involve numerical
+calculation of derivatives $ {\partial \tau \over \partial x_i} $ and $ {\partial \tau \over \partial z_i} $.
+\item This method will give the nearest Fermat ray to the starting solution. This way we can choose which ray we want by having a starting ray close to it. Nevertheless, this is not the most efficient method if we
+want the raypaths of first arrivals. 
+\end{itemize}
+
+\subsection{two-point based on grid method}
+Traveltime are fast to compute. So they can be used in ray tracing. The
+first arrival ray path is the steepest descent path from the receiver to
+the source in the traveltime table. So, we can get the ray path by
+applying the steepest decent method with fixed step length.
+
+\section{Difference between tracer and tracer\_adj}
+\begin{itemize}
+  \item tracer is set fixed step-size 1, while tracer\_adj allows variable step-size by assigning the size to \textbf{step\_len}.
+  \item the vector \textbf{t} that tracer returns is not the true travel time, it is the slowness along the ray.
+\end{itemize}
+
+\section{Runge-Kutta optimization}
+\begin{itemize}
+\item velocity along the ray in \textbf{ode45} has been specified as the nearest grid point's velocity, which may cause error if the velocity sampling intervals are too large. So the weight mean velocity of the nearest four points (forming an enclosed rectangle) may be a good aternative.
+\item set the computation accuracy of the \textbf{ode45} algorithm by \textbf{option} parameter below
+\end{itemize}
+\begin{lstlisting}
+#    ang=arange(iang);
+#    p = [sin(ang);cos(ang)]; % ray parameter
+#    p = p/vel(srcpos(1), srcpos(2))
+#    curpos = srcpos.*[h; h];
+#    y0 = [curpos; p];
+#    t = [0:0.1:5]; % lower the time step-size
+#    option = odeset('RelTol',1e-18,'AbsTol',[1e-18; 1e-18; 1e-18; 1e-18]); % accuracy control
+#    [t,y] = ode45(@(t,y) RK_tracer(t,y,vel,h,h), t, y0, option);
+#    px = y(:,2); pz = y(:,1);
+\end{lstlisting}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{RK0.1_e5.jpg}
+\caption{calculated ray paths using RK method, with time step=0.1, accuracy=e-5}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{RK0.1_e18.jpg}
+\caption{calculated ray paths using RK method, with time step=0.1, accuracy=e-18}
+\end{figure}
+
+\section{Smoothing test}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{spline.jpg}
+\caption{calculated ray paths after spline extrapolation, it takes much more time to calculate ray path due to the denser grid}
+\end{figure}
+Similar to the convolving kernel in the CNN model, we move a 3 by 3 matrix below to smooth the velocity model.
+$$
+\begin{bmatrix}
+\frac{1}{\sqrt{2}} & 1 &  \frac{1}{\sqrt{2}}\\
+1 & 2 & 1\\
+\frac{1}{\sqrt{2}} & 1 &  \frac{1}{\sqrt{2}}
+\end{bmatrix}
+$$
+
+\section{Modification on two-point ray-tracing method}
+\begin{itemize}
+\item densify the take-off angle samples
+\end{itemize}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.3]{twop_denser.jpg}
+\caption{calculated ray paths using two-point ray-traing method, where source lies at [250, 50], take-off angle spans [0:$\pi/2^{10}$:$2\pi$]. See Figure \ref{fig:5} for comparison}
+\label{fig:10}
+\end{figure}
+\section{Ray path determination}
+the ray follows the direction of the travel time gradient.
+\section{supplement}
+\subsection{main.f}
+\begin{lstlisting}
+#building a testing velocity model
+#shooting rays without knowing where heading to
+#two point ray-traing by searching for the optimal take-off angle
+#two point ray-tracing using Fermat's principle
+#two point ray-tracing using traveltime tables
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{onep.jpg}
+\caption{calculated ray paths using shooting method, where source lies at [250, 50], take-off angle spans [0:$\pi$/40:$\pi$/2]. It uses tracer\_adj rather than tracer to calculate ray path}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{twop_ray.jpg}
+\caption{calculated ray path using two-point ray-tracing method, where source lie at [250, 50], receiver is located at [3000, 1750], take-off angle spans [0:$\pi/2^{5}$:$2\pi$]. See Figure \ref{fig:10} for comparison}
+\label{fig:5}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{offangle.jpg}
+\caption{calculated misfit vs. takeoff-angle using two-point optimal take-off angle method}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{twop_fermat.jpg}
+\caption{ray path using two-point Fermat's principle in the main.m}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{twop_ttable.jpg}
+\caption{ray path using two-point travel time table in the main.m}
+\end{figure}
+
+\end{document}

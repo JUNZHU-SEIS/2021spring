@@ -5,4 +5,7 @@ tmp
 *.aux
 *.log
 *.pdf
+*.pptx
+*.rar
+*.tar
 __pycache__
